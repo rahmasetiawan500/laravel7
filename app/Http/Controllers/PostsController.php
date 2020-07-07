@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Post;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 
 
 class PostsController extends Controller
@@ -23,10 +24,14 @@ class PostsController extends Controller
     public function create ()
     {
         
-        return view('posts.create');
+        return view('posts.create', ['post' => new Post()]);
     }
 
-    public function store (Request $request)
+
+
+
+
+    public function store (PostRequest $request)
     {
         // $post = new Post;
         // $post->title = $request->title;
@@ -40,12 +45,10 @@ class PostsController extends Controller
         //     'slug' => \Str::slug($request->title),
         //     'body' => $request->body,
         // ]); 
-        
-        // validate the field
-        $attr = request()->validate([
-            'title' => 'required|min:3',
-            'body' => 'required',
-        ]);
+
+
+        // validate request
+        $attr = $request->all();
 
         // Assign title to the slug
         $attr['slug'] = \Str::slug(request('title'));
@@ -58,11 +61,16 @@ class PostsController extends Controller
         return redirect()->to('posts');
     }
 
+
+
     public function show(Post $post)
     {
         
         return view('posts.show' , compact('post'));
     }
+
+
+
 
     public function edit(Post $post)
     {
@@ -70,18 +78,16 @@ class PostsController extends Controller
         return view('posts.edit' , compact('post'));
     }
 
-    public function update(Post $post)
-    {       
-            
-            // validate the field
-            $attr = request()->validate([
-                'title' => 'required|min:3',
-                'body' => 'required',
-            ]);
 
+
+    public function update(PostRequest $request , Post $post)
+    {       
+            // validate request
+            $attr = $request->all();
 
             $post->update($attr);   
             session()->flash('success', 'The Post Was Updated');
             return redirect()->to('posts');
     }
+
 }
