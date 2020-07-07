@@ -72,6 +72,7 @@ class PostsController extends Controller
 
 
 
+
     public function edit(Post $post)
     {
         
@@ -89,5 +90,18 @@ class PostsController extends Controller
             session()->flash('success', 'The Post Was Updated');
             return redirect()->to('posts');
     }
+
+
+
+    public function destroy(Post $post)
+    {
+        
+        $post->delete();
+
+        session()->flash("success" , "The Post Was Destroyed");
+
+        return redirect('posts');
+    }
+
 
 }
