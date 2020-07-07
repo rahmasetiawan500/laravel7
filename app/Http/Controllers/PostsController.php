@@ -52,6 +52,9 @@ class PostsController extends Controller
 
         //  Create New Post
         Post::create($attr);
+        
+        session()->flash('success', 'The Post Was Created');
+
         return redirect()->to('posts');
     }
 
