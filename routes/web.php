@@ -21,7 +21,11 @@ Route::get('posts' , 'PostsController@index');
 Route::get('posts/create' , 'PostsController@create');
 Route::post('posts/store' , 'PostsController@store');
 
+Route::get('posts/{post:slug}/edit' , 'PostsController@edit');
+Route::patch('posts/{post:slug}/edit' , 'PostsController@update');
+
 Route::get('posts/{post:slug}' , 'PostsController@show');
+// Route::resource('posts', 'PostsController'); 
 
 Route::view('contact','contact');
 
