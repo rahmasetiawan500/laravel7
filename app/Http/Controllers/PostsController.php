@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Post;
-
+use App\{Tag, Post, Category};
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 
@@ -24,7 +23,11 @@ class PostsController extends Controller
     public function create ()
     {
         
-        return view('posts.create', ['post' => new Post()]);
+        return view('posts.create', [
+            'post' => new Post(),
+            'categories'=> Category::get(),
+            'tags'=> Tag::get()
+            ]);
     }
 
 
