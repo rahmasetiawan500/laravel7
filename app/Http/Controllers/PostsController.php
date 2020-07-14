@@ -13,7 +13,7 @@ class PostsController extends Controller
     public function index ()
     {
         
-        $posts = Post::paginate(5);
+        $posts = Post::latest()->paginate(6);
         return view('posts.index' , [
 
             'posts'=>$posts,
@@ -96,7 +96,7 @@ class PostsController extends Controller
 
 
     public function update(PostRequest $request , Post $post)
-    {       
+    {       $this->authorize('update', $post);
             // validate request
             $attr = $request->all();
             $attr['category_id'] = request('category');
@@ -110,20 +110,10 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {
-        if (auth()->user()->is($post->user)) {
-            # code...
-        $post->tags()->detach();
-        $post->delete();
+        $this->authorize('delete', $post);
+        session()->flash("success" , "The Post not Destroyed ");
+        return redirect('posts');
         
-
-        session()->flash("success" , "The Post Was Destroyed");
-
-        return redirect('posts');
-        } else {
-            # code...
-        session()->flash("error" , "The Post not Destroyed whitces not post you");
-        return redirect('posts');
-        }
  
         
 

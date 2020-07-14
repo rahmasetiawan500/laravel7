@@ -17,7 +17,8 @@
       <div class="text-secondary mb-4">
        <P>Author: {{ $post->user->name }} </P> 
       </div>
-{{-- @if (auth()->user()->is($post->user)) --}}
+      @can('delete', $post)
+        {{-- @if (auth()->user()->is($post->user)) --}}
          <!-- Button trigger modal -->
   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
     Delete
@@ -55,6 +56,8 @@
     </div>
   </div>
 {{-- @endif --}}
+      @endcan
+
 
 
 
