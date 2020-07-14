@@ -14,26 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HomeController');
+Route::get('posts' , 'PostsController@index')->name('posts.index');
+Route::prefix('posts')->middleware('auth')->group(function () {
 
+    Route::get('create' , 'PostsController@create')->name('posts.create');
+    Route::post('store' , 'PostsController@store');
+    Route::delete('{post:slug}/delete' , 'PostsController@destroy' );
+    Route::get('{post:slug}/edit' , 'PostsController@edit');
+    Route::patch('{post:slug}/edit' , 'PostsController@update');
 
-Route::get('posts' , 'PostsController@index');
-
-Route::get('posts/create' , 'PostsController@create');
-
-Route::post('posts/store' , 'PostsController@store');
-
-Route::delete('posts/{post:slug}/delete' , 'PostsController@destroy' );
-
-Route::get('posts/{post:slug}/edit' , 'PostsController@edit');
-
-Route::patch('posts/{post:slug}/edit' , 'PostsController@update');
+});
+Route::get('posts/{post:slug}' , 'PostsController@show');
 
 Route::get('categories/{category:slug}' , 'CategoryController@show');
-
 Route::get('tags/{tag:slug}' , 'TagController@show');
 
-Route::get('posts/{post:slug}' , 'PostsController@show');
 
 
 Route::view('contact','contact');
@@ -43,3 +38,6 @@ Route::view('about', 'about');
 
 
 Route::view('login', 'login');
+Auth::routes();
+
+Route::get('/', 'HomeController@index')->name('home');

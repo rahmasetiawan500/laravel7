@@ -9,6 +9,7 @@ use App\Http\Requests\PostRequest;
 
 class PostsController extends Controller
 {
+    
     public function index ()
     {
         
@@ -55,10 +56,14 @@ class PostsController extends Controller
 
         // Assign title to the slug
         $attr['slug'] = \Str::slug(request('title'));
-
+        $attr['category_id'] = request('category');
         //  Create New Post
-        Post::create($attr);
+        $post = Post::create($attr);
         
+        $post->tags()->attach(request('tags'));
+
+        
+
         session()->flash('success', 'The Post Was Created');
 
         return redirect()->to('posts');
@@ -79,7 +84,11 @@ class PostsController extends Controller
     public function edit(Post $post)
     {
         
-        return view('posts.edit' , compact('post'));
+        return view('posts.edit' ,[
+            'post' => $post,
+            'categories' => Category::get(),
+            'tags' => Tag::get(),
+        ]);
     }
 
 
@@ -88,8 +97,9 @@ class PostsController extends Controller
     {       
             // validate request
             $attr = $request->all();
-
-            $post->update($attr);   
+            $attr['category_id'] = request('category');
+            $post->update($attr); 
+            $post->tags()->sync(request('tags'));  
             session()->flash('success', 'The Post Was Updated');
             return redirect()->to('posts');
     }
@@ -98,8 +108,9 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {
-        
+        $post->tags()->detach();
         $post->delete();
+        
 
         session()->flash("success" , "The Post Was Destroyed");
 

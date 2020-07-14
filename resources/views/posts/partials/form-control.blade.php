@@ -7,12 +7,13 @@
     </div>
     @enderror
 </div>
+
 <div class="form-group">
     <label for="category">category</label>
     <select  name="category"  id="category" class="form-control ">
         <Option disabled selected>Choose One</Option>
     @foreach ($categories as $category)
-        <option value="{{ $category->id }}">{{ $category->name }}</option>
+        <option {{ $category->id == $post->category_id ? 'selected' : "" }} value="{{ $category->id }}">{{ $category->name }}</option>
     @endforeach
     </select>
     @error('category')
@@ -24,10 +25,12 @@
 
 <div class="form-group">
     <label for="tags">tags</label>
-    <select  name="tags"  id="tags" class="form-control " multiple>
-        <Option disabled selected>Choose One</Option>
+    <select  name="tags[]"  id="tags" class="form-control select2 " multiple>
+    @foreach ($post->tags as $tag)
+        <option selected value="{{ $tag->id }}">{{ $tag->name }}</option>
+    @endforeach
     @foreach ($tags as $tag)
-        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+        <option  value="{{ $tag->id }}">{{ $tag->name }}</option>
     @endforeach
     </select>
     @error('tags')

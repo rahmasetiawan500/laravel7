@@ -15,7 +15,12 @@
 
     </div>
     <div>
-        <a href="posts/create" class="btn btn-primary">New Post</a>
+        @if (Auth::check())
+        <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
+        @else
+        <a href="{{ route('login') }}" class="btn btn-primary">Login to new create post</a>
+        @endif
+
     </div>
 </div>
 <hr>
@@ -34,9 +39,11 @@
                 </div>
                 <div class="card-footer ">
                     <div class="d-flex justify-content-between">
-                     Publish on   {{ $post->created_at->format("d F Y") }}
-                     <a href="/posts/{{ $post->slug }}/edit" class="btn btn-sm btn-success">Edit</a>
-                    </div>
+                    Publish on   {{ $post->created_at->format("d F Y") }}
+                    @auth
+                    <a href="/posts/{{ $post->slug }}/edit" class="btn btn-sm btn-success">Edit</a>
+                    @endauth
+                </div>
                 </div>
             </div>
         </div>
