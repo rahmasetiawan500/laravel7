@@ -2,21 +2,40 @@
 @section('title' , $post->title )
 @section('content')
     <h4> {{ $post->title }} </h4>
-<div class="text-secondary">
-  <a href="/categories/{{ $post->category->slug }}"> {{ $post->category->name }} </a>
-  &middot; {{ $post->created_at->format('d F Y') }}
-  &middot;
-  @foreach ($post->tags as $tag)
-      <a href="/tags/{{ $tag->slug }}">{{ $tag->name }}</a>
-  @endforeach
-</div>
-<hr>
-    <p>{{ $post->body }}</p>
+    <div class="text-secondary">
+      <a href="/categories/{{ $post->category->slug }}"> {{ $post->category->name }} </a>
+      &middot; {{ $post->created_at->format('d F Y') }}
+      &middot;
+      @foreach ($post->tags as $tag)
+          <a href="/tags/{{ $tag->slug }}">{{ $tag->name }}</a>
+      @endforeach
+      <div class=" media my-3">
+        <img 
+        width="50"
+        class="rounded-circle mr-3"
+        src="{{ $post->user->gravatar() }}" >
+        <div class="media-body">
+          <div>
+            {{ $post->user->name }}
+          </div>
+          <div>
+          {{  '@'.$post->user->username }}
+          </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="mt-2">
+      <p>{!! nl2br($post->body)  !!}</p>
+    </div>
+
 
     <div>
-      <div class="text-secondary mb-4">
-       <P>Author: {{ $post->user->name }} </P> 
-      </div>
+
+      @can('update', $post)
+      <a href="/posts/{{ $post->slug }}/edit" class="btn btn-success mr-2">Edit</a>
+      @endcan
+      
       @can('delete', $post)
         {{-- @if (auth()->user()->is($post->user)) --}}
          <!-- Button trigger modal -->

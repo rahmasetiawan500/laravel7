@@ -2,77 +2,89 @@
 @section('title' , 'Posts')
 @section('content')
 <div class="container">
-<div class="d-flex justify-content-between">
-    <div>
-        @if (isset($category))
-        <h4>Category {{ $category->name }}</h4>
-        @elseif(isset($tag))
-        <h4>Tag {{ $tag->name }}</h4>
-        @else
-        <h4>All posts</h4>
-        @endif
-   
-
+{{-- judul --}}
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (isset($category))
+            <h4>Category {{ $category->name }}</h4>
+            @elseif(isset($tag))
+            <h4>Tag {{ $tag->name }}</h4>
+            @else
+            <h4>All posts</h4>
+            @endif
+        </div>
+        <div>
+            @if (Auth::check())
+            <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
+            {{-- @else
+            <a href="{{ route('login') }}" class="btn btn-primary">Login to new create post</a> --}}
+            @endif
+    
+        </div>
     </div>
-    <div>
-        @if (Auth::check())
-        <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
-        @else
-        <a href="{{ route('login') }}" class="btn btn-primary">Login to new create post</a>
-        @endif
-
-    </div>
-</div>
-<hr>
-<div class="row">
-        @forelse ($posts as $post)
-        <div class="col-md-4">
+    <hr>
+    
+{{-- data table --}}
+    <div class="row">
+        <div class="col-md-7">
+            @forelse ($posts as $post)
             <div class="card mb-4">
-
                 @if ($post->thumbnail)
-                <img style="
-                height: 200px;
-                object-fit: cover;
-                object-position: center;"
-                class="card-img-top" src="{{ $post->takeImage }}">
+                <a href="{{ route('posts.show', $post->slug) }}">
+                    <img style="
+                    height: 400px;
+                    object-fit: cover;
+                    object-position: center;" class="card-img-top" src="{{ $post->takeImage }}">
+                </a>
                 @endif
-
                 <div class="card-body">
-                    <div class="card-title">
-                        {{ $post->title }}
-                    </div>
-                    
                     <div>
-                    {{Str::limit( $post->body, 100) }}
+                        <small>
+                            <a href="{{ route('categories.show', $post->category->slug) }}" class="text-secondary">{{ $post->category->name }} - </a>
+                        </small>
+                        @foreach ($post->tags as $tag)
+                        <small>
+                            <a href="{{ route('tags.show', $tag->slug) }}" class="text-secondary">{{ $tag->name }}</a>
+                        </small>
+                        @endforeach
                     </div>
-                <a href="\posts\{{ $post->slug }}">ReadMore</a>
-                </div>
-                <div class="card-footer ">
-                    <div class="d-flex justify-content-between">
-                    Publish on   {{ $post->created_at->format("d F Y") }}
-                    @can('update', $post)
-                    <a href="/posts/{{ $post->slug }}/edit" class="btn btn-sm btn-success">Edit</a>
-                    @endcan
-                    
-                    
-                </div>
+                    <h5>
+                    <a class="card-title text-dark" href="{{ route('posts.show', $post->slug) }}">
+                        {{ $post->title }}
+                    </a>
+                    </h5>
+                    <div class="text-secondary my-3">
+                        {{Str::limit( $post->body, 130) }}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div class=" media align-items-center">
+                            <img 
+                            width="30"
+                            class="rounded-circle mr-3"
+                            src="{{ $post->user->gravatar() }}" >
+                            <div class="media-body ">
+                            <div>
+                                {{ $post->user->name }}
+                            </div>
+                            </div>
+                            </div>
+                        <div class="text-secondary">
+                            <small>
+                                Publish on {{ $post->created_at->format("d F Y") }}
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        @empty
-        <div class="col-md-12">
-            <div class="alert alert-info align-content-center">
-               Data Kosong
+            @empty
+            <div class="col-md-12">
+                <div class="alert alert-info align-content-center">
+                    Data Kosong
+                </div>
             </div>
+            @endforelse
         </div>
-        @endforelse
-</div>
-<div class="d-flex justify-content-center">
-    <div class="">
-        {{ $posts->links() }}
     </div>
-</div>
+            {{ $posts->links() }}
 
-
-</div>
 @endsection

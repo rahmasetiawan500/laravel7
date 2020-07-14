@@ -136,9 +136,15 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {   
-        \Storage::delete($post->thumbnail);
         $this->authorize('delete', $post);
-        session()->flash("success" , "The Post not Destroyed ");
+
+        \Storage::delete($post->thumbnail);
+
+        $post->tags()->detach();
+        $post->delete();
+
+
+        session()->flash("success" , "The Post Destroyed ");
         return redirect('posts');
         
  
