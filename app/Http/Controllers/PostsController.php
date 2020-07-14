@@ -49,26 +49,30 @@ class PostsController extends Controller
         //     'slug' => \Str::slug($request->title),
         //     'body' => $request->body,
         // ]); 
+                // validate request
+            $request->validate([
+                'thumbnail' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
+            ]);
 
 
-        // validate request
+            $attr = $request->all();
+            $slug =  \Str::slug(request('title'));
+            $attr['slug'] = $slug;
 
-        $attr = $request->all();
+            $thumbnail = request()->file('thumbnail') ? request()->file('thumbnail')->store("images/post") : null;
 
-        // Assign title to the slug
-        $attr['slug'] = \Str::slug(request('title'));
-        $attr['category_id'] = request('category');
-        
-        //  Create New Post
-        $post = auth()->user()->posts()->create($attr);
-        
-        $post->tags()->attach(request('tags'));
+            $attr['category_id'] = request('category');
+            $attr['thumbnail'] = $thumbnail;
+            //  Create New Post
+            $post = auth()->user()->posts()->create($attr);
+            
+            $post->tags()->attach(request('tags'));
 
-        
+            
 
-        session()->flash('success', 'The Post Was Created');
+            session()->flash('success', 'The Post Was Created');
 
-        return redirect()->to('posts');
+            return redirect()->to('posts');
     }
 
 
@@ -96,10 +100,32 @@ class PostsController extends Controller
 
 
     public function update(PostRequest $request , Post $post)
-    {       $this->authorize('update', $post);
+    {       
+            $request->validate([
+                'thumbnail' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
+            ]);
+
+        
+            $this->authorize('update', $post);
+
+            if (request()->file('thumbnail')) {
+                # code...
+                \Storage::delete($post->thumbnail);
+                $thumbnail = request()->file('thumbnail')->store("images/post");
+
+            } else{
+                $thumbnail = $post->thumbnail;
+            }
+
+            
+        
+        
+            
             // validate request
             $attr = $request->all();
             $attr['category_id'] = request('category');
+            $attr['thumbnail'] = $thumbnail;
+
             $post->update($attr); 
             $post->tags()->sync(request('tags'));  
             session()->flash('success', 'The Post Was Updated');
@@ -109,7 +135,8 @@ class PostsController extends Controller
 
 
     public function destroy(Post $post)
-    {
+    {   
+        \Storage::delete($post->thumbnail);
         $this->authorize('delete', $post);
         session()->flash("success" , "The Post not Destroyed ");
         return redirect('posts');

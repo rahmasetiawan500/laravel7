@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
-    protected $fillable = ['title' , 'slug' , 'body', 'category_id'];
+    protected $fillable = ['title' , 'slug' , 'body', 'category_id', 'thumbnail'];
     // protected $guarded = [];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getTakeImageAttribute()
+    {
+        return "/storage/".$this->thumbnail;
     }
 
     public function tags()
