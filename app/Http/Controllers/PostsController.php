@@ -52,13 +52,15 @@ class PostsController extends Controller
 
 
         // validate request
+
         $attr = $request->all();
 
         // Assign title to the slug
         $attr['slug'] = \Str::slug(request('title'));
         $attr['category_id'] = request('category');
+        
         //  Create New Post
-        $post = Post::create($attr);
+        $post = auth()->user()->posts()->create($attr);
         
         $post->tags()->attach(request('tags'));
 
@@ -108,6 +110,8 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {
+        if (auth()->user()->is($post->user)) {
+            # code...
         $post->tags()->detach();
         $post->delete();
         
@@ -115,6 +119,16 @@ class PostsController extends Controller
         session()->flash("success" , "The Post Was Destroyed");
 
         return redirect('posts');
+        } else {
+            # code...
+        session()->flash("error" , "The Post not Destroyed whitces not post you");
+        return redirect('posts');
+        }
+ 
+        
+
+
+
     }
 
 

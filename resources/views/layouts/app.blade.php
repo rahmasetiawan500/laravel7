@@ -22,8 +22,9 @@
 </head>
 <body>
     <div id="app">
-
+        
         @include('layouts.navbar')
+        @include('layouts.alert')
         <div class="container">
             <main class="py-4">
                 @yield('content')
