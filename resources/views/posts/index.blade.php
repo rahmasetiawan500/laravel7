@@ -14,11 +14,7 @@
             @endif
         </div>
         <div>
-            @if (Auth::check())
-            <a href="{{ route('posts.create') }}" class="btn btn-primary">New Post</a>
-            {{-- @else
-            <a href="{{ route('login') }}" class="btn btn-primary">Login to new create post</a> --}}
-            @endif
+         
     
         </div>
     </div>

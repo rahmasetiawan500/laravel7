@@ -1,7 +1,18 @@
 @extends('layouts.app')
 @section('title' , $post->title )
 @section('content')
-    <h4> {{ $post->title }} </h4>
+
+    @if ($post->thumbnail)
+        <img style="
+        height: 400px;
+        object-fit: cover;
+        object-position: center;" class="card-img-top rounded" src="{{ $post->takeImage }}">
+    @endif
+
+
+    
+    <h2 class="my-3"> {{ $post->title }} </h2>
+
     <div class="text-secondary">
       <a href="/categories/{{ $post->category->slug }}"> {{ $post->category->name }} </a>
       &middot; {{ $post->created_at->format('d F Y') }}

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('search' , 'SearchController@post')->name('search.post');
 Route::get('posts' , 'PostsController@index')->name('posts.index');
 Route::prefix('posts')->middleware('auth')->group(function () {
 
